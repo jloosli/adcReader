@@ -1,3 +1,7 @@
+# Project specific files
+data/*
+
+# Compiled files
 *.py[cod]
 
 # C extensions
