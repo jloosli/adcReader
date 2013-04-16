@@ -1,11 +1,11 @@
 #!/usr/bin/python
 
 
-from Adafruit_ADS1x15 import ADS1x15
+from adafruit.Adafruit_ADS1x15 import ADS1x15
 import time, math, sqlite3, os, signal,sys
 import datetime
-from Adafruit_8x8 import EightByEight
-import Adafruit_LEDBackpack
+from adafruit.Adafruit_8x8 import EightByEight
+import adafruit.Adafruit_LEDBackpack
 
 # ===========================================================================
 # 8x8 Pixel Example
