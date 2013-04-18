@@ -1,11 +1,11 @@
 #!/usr/bin/python
 
 
-from adafruit.Adafruit_ADS1x15 import ADS1x15
+from adafruit.Adafruit_ADS1x15.Adafruit_ADS1x15 import ADS1x15
 import time, math, sqlite3, os, signal,sys
 import datetime
-from adafruit.Adafruit_8x8 import EightByEight
-import adafruit.Adafruit_LEDBackpack
+from adafruit.Adafruit_LEDBackpack.Adafruit_8x8 import EightByEight
+from adafruit.Adafruit_LEDBackpack import Adafruit_LEDBackpack
 
 # ===========================================================================
 # 8x8 Pixel Example
@@ -34,7 +34,7 @@ ADS1115 = 0x01  # 16-bit ADC
 ADS_Current = ADS1115
 
 # Initialise the ADC using the default mode (use default I2C address)
-adc = ADS1x15(ic=ADS_Current)
+adc = ADS1x15(ic=ADS_Current, debug = True)
 
 theDir = os.path.dirname(os.path.abspath(__file__))
 filename = os.path.join(theDir, 'data/samples.db')
@@ -58,7 +58,7 @@ conn.close()
 while 1:
   ch = [0,0,0,0]
   for i in range(0,4):
-    result = adc.readADCSingleEnded(i,5000)
+    result = adc.readADCSingleEnded(i,6144)
     print i, result,
     ch[i]=result
   print ""
@@ -83,4 +83,4 @@ while 1:
         grid.setPixel(x, y)
       i += 1
 
-  #time.sleep(1)
+  time.sleep(1)
