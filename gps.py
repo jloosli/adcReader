@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf8 -*-
 """
-DESCRIPTION GOES HERE
+GPS Tracking
 """
 
 import sys
@@ -34,12 +34,38 @@ class GPS:
         #'$GPGSV' : ()
     }
 
+    data={}
+
+    def __init__(self, dev='/dev/ttyUSB0', speed=4800, timeout=1):
+        self.input = serial.Serial(dev, speed, timeout=timeout)
+
     def decode(self,gpsString):
         parts = gpsString.split(',');
         if parts[0] in self.formats.keys():
             return dict(zip(self.formats[parts[0]], parts))
         #raise Exception("Can't find format")
         return None
+
+    def read(self,formatType='$GPRMC', maxTries = 100):
+        for i in range(maxTries):
+            data=self.input.readline()
+            if data: 
+                if data.startswith(formatType):
+                    decoded=self.decode(data) 
+                    self.data[formatType] = decoded
+                    if data.startswith('$GPRMC'):
+                        debug ("Data is %s" % ("valid" if decoded['validity']=="A" else "not valid"))
+                        debug ("Speed is %s " % decoded['speed'])
+                        debug (data)
+                    return True
+        return False
+
+    def getLast(self,formatType='$GPRMC'):
+        try:
+            return self.data[formatType]
+        except Exception as e:
+            return False
+
 
 
 class DataLog:
@@ -90,27 +116,14 @@ class Display():
 
 
 
-t=Display()
-t.input= serial.Serial('/dev/ttyUSB0', 4800, timeout=1)
-t.run()
-
-'''
-$GPRMC speed/lat/long
-$GPGSA # of satellites
-$GPGGA time
-$GPGSV 
-'''
-# g=GPS()
-# decoded = g.decode('$GPRMC,225446,A,4916.45,N,12311.12,W,020.5,054.7,191194,020.3,E*68')
-# print decoded['speed']
-# print decoded
-
 
 def main():
 
     global args
-    # TODO: Do something more interesting here...
-    print('Hello world!')
+    t=Display()
+    t.input= serial.Serial('/dev/ttyUSB0', 4800, timeout=1)
+    t.run()
+
 
 if __name__ == '__main__':
     try:
