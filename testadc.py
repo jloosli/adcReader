@@ -13,6 +13,7 @@ from adafruit.Adafruit_LEDBackpack import Adafruit_LEDBackpack
 grid = EightByEight(address=0x70)
 led = Adafruit_LEDBackpack.LEDBackpack(0x70)
 led.setBrightness = 1
+hasGrid = True
 
 def signal_handler(signal, frame):
         print 'You pressed Ctrl+C!'
@@ -71,16 +72,17 @@ while 1:
   conn.commit()
   conn.close()
 
+  if hasGrid:
+    steps = math.floor(ch[0] / 5000 * 64)
+    print "Channels: %.3f, %.3f, %.3f, %.3f V" % (ch[0],ch[1],ch[2],ch[3])
+    print "Steps = %d" % (steps)
+    if grid.clear() == -1:
+      hasGrid = False
+    i=0
+    for x in range(0, 8):
+      for y in range(0, 8):
+        if i < steps:
+          grid.setPixel(x, y)
+        i += 1
 
-  steps = math.floor(ch[0] / 5000 * 64)
-  print "Channels: %.3f, %.3f, %.3f, %.3f V" % (ch[0],ch[1],ch[2],ch[3])
-  print "Steps = %d" % (steps)
-  grid.clear()
-  i=0
-  for x in range(0, 8):
-    for y in range(0, 8):
-      if i < steps:
-        grid.setPixel(x, y)
-      i += 1
-
-  time.sleep(1)
+  time.sleep(.1)
