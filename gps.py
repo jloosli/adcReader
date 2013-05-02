@@ -57,7 +57,7 @@ class GPS:
                         debug ("Data is %s" % ("valid" if decoded['validity']=="A" else "not valid"))
                         debug ("Speed is %s " % decoded['speed'])
                         debug (data)
-                    return True
+                    return decoded
         return False
 
     def getLast(self,formatType='$GPRMC'):

@@ -2,7 +2,7 @@
 
 
 from adafruit.Adafruit_ADS1x15.Adafruit_ADS1x15 import ADS1x15
-import time, math, sqlite3, os, signal,sys
+import time, math, sqlite3, os, signal,sys, gps
 import datetime
 from adafruit.Adafruit_LEDBackpack.Adafruit_8x8 import EightByEight
 from adafruit.Adafruit_LEDBackpack import Adafruit_LEDBackpack
@@ -56,6 +56,9 @@ for row in c.fetchall():
 conn.commit()
 conn.close()
 
+withoutGPS = "insert into samples(dataset,date,ch0,ch1,ch2,ch3) values (?, ?, ?, ?, ?, ?)"
+withGPS = "insert into samples(dataset,date,ch0,ch1,ch2,ch3,lat,lng,speed) values (?, ?, ?, ?, ?, ?,?,?,?)"
+
 while 1:
   ch = [0,0,0,0]
   for i in range(0,4):
@@ -64,20 +67,26 @@ while 1:
     ch[i]=result
   print ""
 
+  gpsData=gps.GPS.read()
+
   conn = sqlite3.connect(filename)
   c = conn.cursor()
   ts = datetime.datetime.now()
-  c.execute("insert into samples(dataset,date,ch0,ch1,ch2,ch3) values (?, ?, ?, ?, ?, ?)", 
-      (dataset, ts, ch[0],ch[1],ch[2],ch[3]))
+  if gpsData:
+    c.execute(withGPS,
+              (dataset, ts, ch[0],ch[1],ch[2],ch[3],gpsData['lat'],gpsData['lng'],gpsData['speed']))
+  else:
+    c.execute(withoutGPS, (dataset, ts, ch[0],ch[1],ch[2],ch[3]))
   conn.commit()
   conn.close()
+
+  if hasGrid and grid.clear() == -1:
+    hasGrid = False
 
   if hasGrid:
     steps = math.floor(ch[0] / 5000 * 64)
     print "Channels: %.3f, %.3f, %.3f, %.3f V" % (ch[0],ch[1],ch[2],ch[3])
     print "Steps = %d" % (steps)
-    if grid.clear() == -1:
-      hasGrid = False
     i=0
     for x in range(0, 8):
       for y in range(0, 8):
