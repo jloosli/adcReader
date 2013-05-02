@@ -17,7 +17,7 @@ import random, datetime
 def debug(*vals):
     global args
     if args.verbose:
-        print *vals
+        print [i for i in vals]
 
 class GPS:
     formats = {
