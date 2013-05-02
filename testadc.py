@@ -2,7 +2,7 @@
 
 
 from adafruit.Adafruit_ADS1x15.Adafruit_ADS1x15 import ADS1x15
-import time, math, sqlite3, os, signal,sys, gps
+import time, math, sqlite3, os, signal,sys, gps2 as gps
 import datetime
 from adafruit.Adafruit_LEDBackpack.Adafruit_8x8 import EightByEight
 from adafruit.Adafruit_LEDBackpack import Adafruit_LEDBackpack
