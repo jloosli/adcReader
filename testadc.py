@@ -1,5 +1,5 @@
 #!/usr/bin/python
-
+# -*- coding: utf8 -*-
 
 from adafruit.Adafruit_ADS1x15.Adafruit_ADS1x15 import ADS1x15
 import time, math, sqlite3, os, signal,sys, gps2 as gps
