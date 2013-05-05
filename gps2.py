@@ -72,11 +72,10 @@ class DataLog:
 
     def __init__(self):
         thisDir = os.path.dirname(__file__)
-        dbname = 'football.db'
-
-        print(os.path.join(thisDir + '/django/projects/football/', dbname))
+        dbname = 'gps.db'
+        datapath = os.path.join(thisDir + '/data/', dbname)
     
-        self.con=db.connect(os.path.join(thisDir + '/django/projects/football/', dbname))
+        self.con=db.connect(datapath)
         self.cur = self.con.cursor()
         self.currentSet = None
         self.g=GPS()
