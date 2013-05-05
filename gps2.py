@@ -74,6 +74,7 @@ class DataLog:
         thisDir = os.path.dirname(__file__)
         dbname = 'gps.db'
         datapath = os.path.join(thisDir + '/data/', dbname)
+        print datapath
     
         self.con=db.connect(datapath)
         self.cur = self.con.cursor()
