@@ -2,7 +2,7 @@
 # -*- coding: utf8 -*-
 
 from adafruit.Adafruit_ADS1x15.Adafruit_ADS1x15 import ADS1x15
-import time, math, sqlite3, os, signal,sys, gps2 as gps
+import time, math, sqlite3, os, signal, sys, gps2 as gps
 import datetime
 from adafruit.Adafruit_LEDBackpack.Adafruit_8x8 import EightByEight
 from adafruit.Adafruit_LEDBackpack import Adafruit_LEDBackpack
@@ -14,6 +14,8 @@ grid = EightByEight(address=0x70)
 led = Adafruit_LEDBackpack.LEDBackpack(0x70)
 led.setBrightness = 1
 hasGrid = True
+displayChannels = 2
+
 
 def signal_handler(signal, frame):
         print 'You pressed Ctrl+C!'
@@ -83,15 +85,25 @@ while 1:
   if hasGrid and grid.clear() == -1:
     hasGrid = False
 
+
+
   if hasGrid:
-    steps = math.floor(ch[0] / 5000 * 64)
-    print "Channels: %.3f, %.3f, %.3f, %.3f V" % (ch[0],ch[1],ch[2],ch[3])
-    print "Steps = %d" % (steps)
-    i=0
-    for x in range(0, 8):
-      for y in range(0, 8):
-        if i < steps:
-          grid.setPixel(x, y)
-        i += 1
+    for i in range(displayChannels):
+      steps[i] = math.floor(ch[i] / 5000 * 64 / displayChannels)
+      fullrows = math.floor(steps[i]/8*displayChannels)
+      partrows = steps[i]*displayChannels % 8
+      for x in range(fullrows):
+        for y in range(0,8):
+          grid.setPixel(x+ 8*i,y)
+      for y in range(0,partrows):
+        grid.setPixel(fullrows,y)
+    # print "Channels: %.3f, %.3f, %.3f, %.3f V" % (ch[0],ch[1],ch[2],ch[3])
+    # print "Steps = %d" % (steps)
+    # i=0
+    # for x in range(0, 8):
+    #   for y in range(0, 8):
+    #     if i < steps:
+    #       grid.setPixel(x, y)
+    #     i += 1
 
   time.sleep(.1)
